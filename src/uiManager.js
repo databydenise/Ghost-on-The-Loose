@@ -9,7 +9,7 @@ export class UIManager {
       font-family: sans-serif; font-size: 1.5rem; font-weight: bold;
       text-shadow: 0 0 10px #ff55ff; pointer-events: none; z-index: 10; display: none;
     `;
-    this.timerHud.textContent = `Time: 60s`;
+    this.timerHud.textContent = `Time: 90s`;
     document.body.appendChild(this.timerHud);
 
     // 2. Gem HUD (Upper Right)

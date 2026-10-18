@@ -81,7 +81,7 @@ const scoreSystem = new ScoreSystem();
 const uiManager = new UIManager(gemCount);
 
 let collectedGemsCount = 0;
-let timeLeft = 60.0;
+let timeLeft = 90.0;
 let gameOver = false;
 let gameStarted = false; // Pauses game until tutorial/countdown finishes
 
