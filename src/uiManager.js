@@ -15,12 +15,76 @@ export class UIManager {
     // 2. Gem HUD (Upper Right)
     this.gemHud = document.createElement('div');
     this.gemHud.style.cssText = `
-      position: fixed; top: 20px; right: 20px; color: #00ffff; 
+      position: fixed; top: 20px; right: 100px; color: #00ffff; 
       font-family: sans-serif; font-size: 1.5rem; font-weight: bold;
       text-shadow: 0 0 10px #00ffff; pointer-events: none; z-index: 10; display: none;
     `;
     this.gemHud.textContent = `Gems: 0 / ${this.totalGems}`;
     document.body.appendChild(this.gemHud);
+
+    // 3. Start.ng Profile Card (Upper Right corner)
+    this.initPlayerCard();
+  }
+
+  async initPlayerCard() {
+    const card = document.createElement('div');
+    card.style.cssText = `
+      position: fixed; top: 16px; right: 16px; display: flex; align-items: center; gap: 10px;
+      padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(35, 17, 60, 0.85); 
+      border: 1px solid rgba(255, 85, 255, 0.3); color: #fffefa; font-family: sans-serif; z-index: 20;
+    `;
+    card.innerHTML = `
+      <img id="player-face" style="width: 36px; height: 36px; border-radius: 50%; background: #d8fd71;" alt="">
+      <div>
+        <b id="player-name" style="font-size: 13px; display: block;"></b>
+        <span id="player-account" style="font-size: 11px; opacity: 0.7;"></span>
+      </div>
+      <button id="player-sign-in" style="margin-left: 6px; border: 0; border-radius: 999px; padding: 4px 10px; background: #ff00aa; color: #fff; font-weight: 700; cursor: pointer; font-size: 11px;" hidden>Sign in</button>
+    `;
+    document.body.appendChild(card);
+
+    // Connect to start.ng via postMessage helper
+    try {
+      const reply = await this.askStartNg({ type: 'startng:whoami' }, 'startng:user');
+      const player = reply?.user ?? reply?.guest;
+      if (player) {
+        card.querySelector('#player-face').src = player.face;
+        card.querySelector('#player-name').textContent = player.name;
+        card.querySelector('#player-account').textContent = reply.user?.account ? `@${reply.user.account}` : 'Guest Mode';
+        const signInBtn = card.querySelector('#player-sign-in');
+        signInBtn.hidden = !!reply.user;
+        signInBtn.onclick = () => {
+          location.href = `https://start.ng/?return_to=${encodeURIComponent(location.origin + location.pathname)}`;
+        };
+      }
+    } catch (e) {
+      card.style.display = 'none'; // Fallback if offline or outside start.ng
+    }
+  }
+
+  // Helper for Start.ng postMessage communication
+  async askStartNg(message, replyType, timeoutMs = 3000) {
+    const START_NG = 'https://start.ng';
+    const el = await new Promise((resolve, reject) => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `${START_NG}/connect`;
+      iframe.hidden = true;
+      iframe.onload = () => resolve(iframe);
+      iframe.onerror = reject;
+      document.body.append(iframe);
+    });
+
+    return new Promise((resolve) => {
+      const requestId = Math.random().toString(36).slice(2);
+      const done = (reply) => { clearTimeout(timer); removeEventListener('message', onMessage); resolve(reply); };
+      const timer = setTimeout(() => done(null), timeoutMs);
+      function onMessage(e) {
+        if (e.origin !== START_NG || e.source !== el.contentWindow) return;
+        if (e.data?.type === replyType && e.data.requestId === requestId) done(e.data);
+      }
+      addEventListener('message', onMessage);
+      el.contentWindow.postMessage({ ...message, requestId }, START_NG);
+    });
   }
 
   showHUD() {
@@ -65,7 +129,6 @@ export class UIManager {
       box-shadow: 0 0 30px rgba(255, 85, 255, 0.4); margin-bottom: 20px;
     `;
     
-    // Append to DOM immediately so querySelector works smoothly
     overlay.appendChild(cardContainer);
     document.body.appendChild(overlay);
 
