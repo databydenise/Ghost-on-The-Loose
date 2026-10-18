@@ -1,4 +1,5 @@
 {
+  "folder": "dist",
   "leaderboard": {
     "stats": [
       { "key": "gems", "label": "Gems Collected", "order": "highest" },
