@@ -212,17 +212,18 @@ function animate(now) {
       uiManager.updateTimer(timeLeft);
     }
 
-    // Finish Portal Unlock & Win Condition
+  // Finish Portal Unlock & Win Condition
     if (collectedGemsCount >= gemCount) {
       finishMat.color.set(0xff00aa);
       finishMat.opacity = 0.9;
       
       if (ghost.mesh.position.distanceTo(finishMesh.position) < 0.6) {
         gameOver = true;
-        const results = scoreSystem.calculateWinScore(collectedGemsCount, timeLeft);
-        uiManager.showVictoryOverlay(results);
+        scoreSystem.calculateWinScore(collectedGemsCount, timeLeft).then((results) => {
+          uiManager.showVictoryOverlay(results);
+        });
       }
-    }
+    } // <--- Just one closing brace here!
 
     ghost.update(delta, isMoving);
   }
