@@ -18,6 +18,7 @@ export class ScoreSystem {
     // Submit stats to start.ng leaderboard
     try {
       await this.submitToStartNg({
+        score: this.score, // <--- Add this line!
         gems: gemsCollected,
         time_left: Math.floor(timeRemainingSeconds)
       });
