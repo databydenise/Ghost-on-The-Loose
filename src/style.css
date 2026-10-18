@@ -1,0 +1,130 @@
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #080a12;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+#hud {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  padding: 24px;
+  text-shadow: 0 2px 8px #000;
+}
+
+.game-title {
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.objective {
+  margin-top: 10px;
+  color: #e4c49a;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.timer-label {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #c6c6c6;
+}
+
+#timer {
+  position: absolute;
+  top: 43px;
+  right: 28px;
+  font-size: 34px;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+#location {
+  position: absolute;
+  left: 50%;
+  bottom: 75px;
+  transform: translateX(-50%);
+  color: #e4c49a;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.controls {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 95%;
+  font-size: 11px;
+  line-height: 2;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #dedede;
+}
+
+#game-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(5, 4, 9, 0.88);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#game-overlay.visible {
+  display: flex;
+}
+
+.overlay-panel {
+  padding: 32px;
+}
+
+.overlay-panel h1 {
+  font-size: clamp(32px, 7vw, 64px);
+  letter-spacing: 5px;
+  color: #b83232;
+}
+
+.overlay-panel p {
+  color: #ddd;
+  margin-bottom: 28px;
+}
+
+.overlay-panel button {
+  border: 1px solid #b83232;
+  background: #351216;
+  color: white;
+  padding: 14px 24px;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+.overlay-panel button:hover {
+  background: #76232b;
+}
